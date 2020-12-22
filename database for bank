@@ -1,0 +1,158 @@
+DROP DATABASE IF EXISTS Bank;
+CREATE DATABASE IF NOT EXISTS Bank;
+
+CREATE TABLE IF NOT EXISTS users ( 
+    user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    user_phone INT(11) UNIQUE,
+    user_email varchar(50) UNIQUE,
+    user_age INT,
+    Gender ENUM('female','male'),
+    country VARCHAR(50),
+    customer_type_code INT ,
+    created_at timestamp NOT NULL default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL on update CURRENT_TIMESTAMP,
+    deleted_at timestamp NULL,
+    IsDeleted BIT NOT NULL DEFAULT 0    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# 999 Company
+# 888 individual
+# 777 Organisation
+INSERT INTO users VALUES (null,'Ahmed ','Ali',01065196118,'ahmed12@gmail.com',19,null,'Egypt',null,null,null,null,0);
+INSERT INTO users VALUES (null,'Ali',' Mahood',01056489217,'Ali@gmail.com',20,null,'Germany',null,null,null,null,0);
+INSERT INTO users VALUES(null,'Yasser ','Bader',01552462565,'yasser@gmail.com',40,null,'Lebanon', 777,null,null,null,0);
+INSERT INTO users VALUES (null,'Mahmood ','ElMasri',01255568199,'mahmood@gmail.com',23,null,'France', null,null,null,null,0);
+INSERT INTO users VALUES (null,'Noor',' Hassan',01155726945,'noor@gmail.com',30,null,'Sudan', null,null,null,null,0);
+INSERT INTO users VALUES (null,'Mahmood','khalid',01114578962,'khalid@gmaoil.com',20,null,'Paris',888,null,null,null,0);
+INSERT INTO users VALUES (null,'Hind ','Ali',01548755421,'Hind12@gmail.com',42,null,'India', 777,null,null,null,0);
+INSERT INTO users VALUES (null,'Amira ','Masri',01254478896,'Amira12@gmail.com',23,null,'France', 888,null,null,null,0);
+INSERT INTO users VALUES (null,'Mustafa',' Hassan',01124533125,'Mustafa12@gmail.com',31,null,'Lebanon', 999,null,null,null,0);
+INSERT INTO users VALUES (null,'Yara',' Saad',01598754621,'yara2@gmail.com',20,null,'Paris', 777,null,null,null,0);
+
+
+################### employees##########
+CREATE TABLE IF NOT EXISTS enployees(
+    enployee_id int not null PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    employee_specialty varchar(20),
+    employee_salary DECIMAL(10,2),
+    created_at timestamp NOT NULL default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL on update CURRENT_TIMESTAMP
+    );
+    INSERT INTO enployees VALUES (null,1,'accountant',10000,null,null);
+    INSERT INTO enployees VALUES (null,2,'manager',20000,null,null);
+    INSERT INTO enployees VALUES (null,4,'dustman',2000,null,null);
+    INSERT INTO enployees VALUES (null,5,'accountant',10000,null,null);
+   
+######### customer_type ##########
+CREATE TABLE IF NOT EXISTS customer_type ( 
+    customer_type_code INT PRIMARY KEY,
+    customer_type_description SET('Company','Organisation','individual'),
+    created_at timestamp NOT NULL default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL on update CURRENT_TIMESTAMP
+    );
+INSERT INTO customer_type VALUES (999,'Company',null,null);
+INSERT INTO customer_type VALUES (777,'Organisation',null,null);
+INSERT INTO customer_type VALUES (888,'individual',null,null);
+
+########### customer_account ##############
+
+CREATE TABLE IF NOT EXISTS customer_account ( 
+    account_id int not null PRIMARY KEY AUTO_INCREMENT,
+    users_id INT ,
+    account_number INT UNIQUE,
+    account_type_code INT,
+    account_name VARCHAR(100),
+    date_account_opened timestamp,
+    date_account_closed datetime,
+    account_branch VARCHAR(20),
+    created_at timestamp NOT NULL default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL on update CURRENT_TIMESTAMP
+    );
+INSERT INTO customer_account VALUES (NULL,1,898751,1,'The Egyptian Science and Technology',null,NULL,'France',null,null);
+INSERT INTO customer_account VALUES (NULL,2,289727,2,'Hope Hospital',null,null,'India',null,null);
+INSERT INTO customer_account VALUES (NULL,3,998752,2,'google',null,NULL,'France',null,null);
+INSERT INTO customer_account VALUES (NULL,4,848561,1,'import and export company',null,null,'India',null,null);
+INSERT INTO customer_account VALUES (NULL,5,789552,2,'Focus',null,NULL,'Egypt',null,null);
+
+INSERT INTO customer_account VALUES (NULL,6,89522334,1,'The Egyptian Science and Technology',null,NULL,'Lebanon',null,null);
+INSERT INTO customer_account VALUES (NULL,7,96544114,2,'Hope Hospital',null,null,'Lebanon',null,null);
+INSERT INTO customer_account VALUES (NULL,8,99875298741,2,'google',null,NULL,'UK',null,null);
+INSERT INTO customer_account VALUES (NULL,9,852155585,1,'import and export company',null,null,'Lebanon',null,null);
+INSERT INTO customer_account VALUES (NULL,10,98585899,2,'Focus',null,NULL,'Egypt',null,null);
+
+################# account_type ######################
+CREATE TABLE IF NOT EXISTS account_type ( 
+    account_type_code INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    account_type ENUM('current account','Saving account'),
+    created_at timestamp NOT NULL default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL on update CURRENT_TIMESTAMP
+    );
+INSERT INTO account_type VALUES (null,'current account',null,null);
+INSERT INTO account_type VALUES (null,'Saving account',null,null);
+
+############### Balance  #####################
+CREATE TABLE IF NOT EXISTS balance (
+    balance_id int not null PRIMARY KEY AUTO_INCREMENT,
+    account_number INT,
+    balance_value DECIMAL(15,2),
+    benefit DECIMAL(5,2),
+    balance_at_date DECIMAL(15,2),
+    created_at timestamp NOT NULL default CURRENT_TIMESTAMP,
+    updated_at timestamp NULL on update CURRENT_TIMESTAMP
+    );
+INSERT INTO balance VALUES (null,898751,500000,100,500100,null,null);
+INSERT INTO balance VALUES (null,289727,90000,50,90050,null,null);
+INSERT INTO balance VALUES (null,998752,1000,30,1030,null,null);
+INSERT INTO balance VALUES (null,848561,1000000,1000,1001000,null,null);
+INSERT INTO balance VALUES (null,789552,5000,20,5020,null,null);
+
+INSERT INTO balance VALUES (null,89522334,500000,100,500100,null,null);
+INSERT INTO balance VALUES (null,96544114,90000,50,90050,null,null);
+INSERT INTO balance VALUES (null,99875298741,1000,30,1030,null,null);
+INSERT INTO balance VALUES (null,852155585,1000000,1000,1001000,null,null);
+INSERT INTO balance VALUES (null,98585899,5000,20,5020,null,null);
+#########################################################################
+ALTER TABLE enployees
+ADD CONSTRAINT fk_enployees_users
+FOREIGN KEY (user_id) REFERENCES users(user_id) 
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+-- ----------------------------------------------------------------
+ALTER TABLE users
+ADD CONSTRAINT fk_customer_type_users
+FOREIGN KEY (customer_type_code) REFERENCES customer_type(customer_type_code)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+-- ---------------------------------------------------------------
+/*ALTER TABLE users
+ADD CONSTRAINT fk_address_users
+FOREIGN KEY (address_id) REFERENCES address (address_id);*/
+-- --------------------------------------------------------------
+ALTER TABLE customer_account
+ADD CONSTRAINT fk_users_customer
+FOREIGN KEY (users_id) REFERENCES users (user_id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+-- ---------------------------------------------------------------
+ALTER TABLE customer_account
+ADD CONSTRAINT fk_account_typ_customer
+FOREIGN KEY (account_type_code) REFERENCES account_type (account_type_code)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+-- ----------------------------------------------------------------
+ALTER TABLE balance
+ADD CONSTRAINT fk_customer_account_balance
+FOREIGN KEY (account_number) REFERENCES customer_account  (account_number)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+##########################################################
+DROP VIEW user_information;
+CREATE VIEW user_information as 
+SELECT users.user_id,users.first_name,users.country,users.last_name, users.user_phone,
+customer_account.account_number,customer_account.account_name,balance.balance_value,
+balance.balance_at_date FROM(( users INNER JOIN customer_account on users.user_id=customer_account.users_id)
+                             inner JOIN balance on customer_account.account_number=balance.account_number);
+-- -------------------------------------------------------------------------
